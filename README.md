@@ -4,7 +4,7 @@ A real-time, browser-based collaborative code editor built with **React, Node.js
 
 🔗 **Live Demo:** [https://code-editor-pink-ten.vercel.app/](https://code-editor-pink-ten.vercel.app/)
 
-Backend server is usually sleeping due to inactivity, hence wait for a minute after clicking, live demo link. After server starts, all features start working as usual.
+The backend server may be inactive due to periods of inactivity. After clicking the live demo link, please allow up to one minute for the server to start. Once it’s running, all features will function as intended.
 
 ---
 
