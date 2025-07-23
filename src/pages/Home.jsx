@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import {v4 as uuidV4} from 'uuid'
+// importing version 4 as uuidV4
 import toast from 'react-hot-toast'
 import {useNavigate} from 'react-router-dom'
 
@@ -59,6 +60,7 @@ const Home = () => {
                 onChange={(e) => setUserName(e.target.value)}
                 value={userName}
                 onKeyUp={handleInputEnter}
+                // onKeyUp helps in listening all key pressed
               />
               <button onClick={joinRoom} className="btn joinBtn">Join</button>
               <span className="createInfo">

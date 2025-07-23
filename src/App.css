@@ -61,6 +61,9 @@
  .joinBtn:hover, .leaveBtn:hover{
    background-color: #3acb6a;
  }
+ .copyBtn:hover{
+   background-color: rgb(178, 204, 216);
+ }
  .createInfo{
    margin: 0 auto;
    margin-top: 20px;
@@ -122,4 +125,10 @@
  }
  .editorWrap{
    background-color: white;
+ }
+ .CodeMirror{
+  min-height: calc(100vh - 20px);
+  font-size: 20px;
+  line-height: 1.6;
+  padding-top: 20px;
  }

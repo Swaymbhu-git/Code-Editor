@@ -10,17 +10,17 @@ function App() {
   return (
    <>
       <div>
-      <Toaster
-        position= "top-right"
-        toastOptions= {{
-          success: {
-            theme: {
-              primary: '#4aed88',
+        <Toaster
+          position= "top-right"
+          toastOptions= {{
+            success: {
+              theme: {
+                primary: '#4aed88',
+              },
             },
-          },
-        }}
-      ></Toaster>
-    </div>
+          }}
+        ></Toaster>
+      </div>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home/>}></Route>

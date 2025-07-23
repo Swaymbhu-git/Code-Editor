@@ -1,36 +1,60 @@
 import React, { useEffect, useRef } from 'react';
-import { EditorState } from '@codemirror/state';
-import { EditorView, basicSetup } from '@codemirror/basic-setup';
-import { javascript } from '@codemirror/lang-javascript';
-import { dracula } from '@uiw/codemirror-theme-dracula'; // ✅ Correct theme package
+import Codemirror from 'codemirror';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/dracula.css';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/addon/edit/closetag';
+import 'codemirror/addon/edit/closebrackets';
+import ACTIONS from '../Actions';
 
-const Editor = ({ userName }) => {
-  const editorRef = useRef(null);
+const Editor = ({ socket, roomId, onCodeChange }) => {
+    const editorRef = useRef(null);
+    const textareaRef = useRef(null);
 
-  useEffect(() => {
-    const state = EditorState.create({
-      doc: '',
-      extensions: [basicSetup, javascript(), dracula],
-    });
+    useEffect(() => {
+        if (textareaRef.current && !editorRef.current) {
+            editorRef.current = Codemirror.fromTextArea(textareaRef.current, {
+                mode: { name: 'javascript', json: true },
+                theme: 'dracula',
+                autoCloseTags: true,
+                autoCloseBrackets: true,
+                lineNumbers: true,
+                lineWrapping: true,
+            });
+        }
 
-    const view = new EditorView({
-      state,
-      parent: editorRef.current,
-    });
+        if (socket && editorRef.current) {
+            const handleCodeChange = ({ code }) => {
+                if (code !== null && editorRef.current.getValue() !== code) {
+                    editorRef.current.setValue(code);
+                }
+            };
+            socket.on(ACTIONS.CODE_CHANGE, handleCodeChange);
 
-    return () => view.destroy(); // Cleanup on unmount
-  }, []);
+            const handleEditorChange = (instance, changes) => {
+                const { origin } = changes;
+                const code = instance.getValue();
+                if (onCodeChange) {
+                    onCodeChange(code);
+                }
+                if (origin !== 'setValue') {
+                    socket.emit(ACTIONS.CODE_CHANGE, {
+                        roomId,
+                        code,
+                    });
+                }
+            };
+            editorRef.current.on('change', handleEditorChange);
 
-  return (
-    <div
-      ref={editorRef}
-      style={{
-        height: '100%',
-        border: '1px solid #444',
-        borderRadius: '8px',
-      }}
-    ></div>
-  );
+            return () => {
+                socket.off(ACTIONS.CODE_CHANGE, handleCodeChange);
+                // Codemirror 'change' listeners are harder to clean up this way,
+                // but cleaning the socket listener prevents the biggest memory leaks.
+            };
+        }
+    }, [socket]); // Effect depends on the socket prop
+
+    return <textarea ref={textareaRef} />;
 };
 
 export default Editor;
